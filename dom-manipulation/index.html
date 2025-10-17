@@ -10,19 +10,29 @@
       padding: 2rem;
       background-color: #f4f4f4;
     }
+
+    h1, h2 {
+      color: #333;
+    }
+
     #quoteDisplay {
       margin: 1rem 0;
       padding: 1rem;
       background-color: #fff;
       border-left: 4px solid #FF6565;
+      font-size: 1.2rem;
     }
+
     .form-group {
       margin: 1rem 0;
     }
+
     input {
       padding: 0.5rem;
       margin-right: 0.5rem;
+      width: 200px;
     }
+
     button {
       padding: 0.5rem 1rem;
       background-color: #FF6565;
@@ -30,29 +40,35 @@
       border: none;
       cursor: pointer;
     }
+
     button:hover {
       opacity: 0.9;
+    }
+
+    select {
+      padding: 0.5rem;
+      margin-right: 0.5rem;
     }
   </style>
 </head>
 <body>
   <h1>Dynamic Quote Generator</h1>
 
+  <!-- Category selector and quote button -->
   <div>
     <label for="categorySelect">Choose Category:</label>
     <select id="categorySelect"></select>
     <button id="newQuote">Show New Quote</button>
   </div>
 
+  <!-- Display area for quotes -->
   <div id="quoteDisplay"></div>
 
+  <!-- Form container for adding new quotes -->
   <h2>Add a New Quote</h2>
-  <div class="form-group">
-    <input id="newQuoteText" type="text" placeholder="Enter a new quote" />
-    <input id="newQuoteCategory" type="text" placeholder="Enter quote category" />
-    <button id="addQuoteBtn">Add Quote</button>
-  </div>
+  <div id="quoteFormContainer"></div>
 
+  <!-- JavaScript logic -->
   <script src="script.js"></script>
 </body>
 </html>
