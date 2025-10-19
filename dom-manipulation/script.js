@@ -19,6 +19,10 @@ function notifyUser(message) {
   const notice = document.createElement("div");
   notice.textContent = message;
   notice.className = "notice";
+  notice.style.background = "#fffae6";
+  notice.style.border = "1px solid #ffd700";
+  notice.style.padding = "0.5rem";
+  notice.style.marginTop = "1rem";
   document.body.insertBefore(notice, document.body.firstChild);
   setTimeout(() => notice.remove(), 5000);
 }
@@ -35,8 +39,8 @@ function mergeQuotes(serverQuotes, localQuotes) {
   return Array.from(map.values());
 }
 
-// Fetch quotes from JSONPlaceholder and sync
-async function fetchQuotesFromServer() {
+// Sync quotes from server
+async function syncQuotes() {
   try {
     const response = await fetch(SERVER_URL);
     const serverPosts = await response.json();
@@ -55,16 +59,16 @@ async function fetchQuotesFromServer() {
 
     populateCategories();
     filterQuotes();
-    notifyUser("Quotes synced from JSONPlaceholder.");
+    notifyUser("Quotes synced from server.");
   } catch (error) {
     console.error("Error syncing with server:", error);
-    notifyUser("Failed to sync with JSONPlaceholder.");
+    notifyUser("Failed to sync with server.");
   }
 }
 
 // Periodic sync every 30 seconds
-setInterval(fetchQuotesFromServer, 30000);
-manualSyncBtn?.addEventListener("click", fetchQuotesFromServer);
+setInterval(syncQuotes, 30000);
+manualSyncBtn?.addEventListener("click", syncQuotes);
 
 // Save selected filter
 function saveSelectedFilter(category) {
