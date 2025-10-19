@@ -9,6 +9,8 @@
       font-family: Arial, sans-serif;
       padding: 2rem;
       background-color: #f4f4f4;
+      max-width: 800px;
+      margin: auto;
     }
 
     h1, h2 {
@@ -27,7 +29,7 @@
       margin: 1rem 0;
     }
 
-    input {
+    input, select {
       padding: 0.5rem;
       margin-right: 0.5rem;
       width: 200px;
@@ -45,9 +47,17 @@
       opacity: 0.9;
     }
 
-    select {
-      padding: 0.5rem;
-      margin-right: 0.5rem;
+    #quoteFormContainer input {
+      margin-bottom: 0.5rem;
+      display: block;
+    }
+
+    #quoteFormContainer button {
+      margin-top: 0.5rem;
+    }
+
+    #importExport {
+      margin-top: 2rem;
     }
   </style>
 </head>
@@ -67,6 +77,13 @@
   <!-- Form container for adding new quotes -->
   <h2>Add a New Quote</h2>
   <div id="quoteFormContainer"></div>
+
+  <!-- Import / Export controls -->
+  <div id="importExport">
+    <h2>Import / Export Quotes</h2>
+    <input type="file" id="importFile" accept=".json" onchange="importFromJsonFile(event)" />
+    <button onclick="exportQuotesToJson()">Export Quotes</button>
+  </div>
 
   <!-- JavaScript logic -->
   <script src="script.js"></script>
