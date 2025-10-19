@@ -8,6 +8,7 @@ const categoryFilter = document.getElementById("categoryFilter");
 const filteredQuotes = document.getElementById("filteredQuotes");
 const newQuoteBtn = document.getElementById("newQuote");
 const manualSyncBtn = document.getElementById("manualSyncBtn");
+const importQuotesFile = document.getElementById("importQuotesFile");
 
 // Save quotes to localStorage
 function saveQuotes() {
@@ -45,7 +46,6 @@ async function fetchQuotesFromServer() {
     const response = await fetch(SERVER_URL);
     const serverPosts = await response.json();
 
-    // Convert posts to quote format
     const serverQuotes = serverPosts.slice(0, 10).map(post => ({
       text: post.title,
       category: "Placeholder"
@@ -210,6 +210,49 @@ async function addQuote() {
   } else {
     alert("Please enter both quote text and category.");
   }
+}
+
+// Export quotes to JSON file
+function exportToJsonFile() {
+  const dataStr = JSON.stringify(quotes, null, 2);
+  const blob = new Blob([dataStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "quotes.json";
+  a.click();
+
+  URL.revokeObjectURL(url);
+  notifyUser("Quotes exported to JSON file.");
+}
+
+// Import quotes from JSON file
+function importFromJsonFile() {
+  const file = importQuotesFile?.files?.[0];
+  if (!file) {
+    alert("Please select a file first.");
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = function (e) {
+    try {
+      const importedQuotes = JSON.parse(e.target.result);
+      if (!Array.isArray(importedQuotes)) throw new Error("Invalid format");
+
+      const merged = mergeQuotes(importedQuotes, quotes);
+      quotes = merged;
+      saveQuotes();
+      populateCategories();
+      filterQuotes();
+      notifyUser("Quotes imported and merged successfully.");
+    } catch (err) {
+      console.error("Import failed:", err);
+      notifyUser("Failed to import quotes. Invalid file format.");
+    }
+  };
+  reader.readAsText(file);
 }
 
 // Initialize app
