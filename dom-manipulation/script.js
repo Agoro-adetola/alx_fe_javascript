@@ -160,8 +160,8 @@ function createAddQuoteForm() {
   formContainer.appendChild(addButton);
 }
 
-// Add new quote locally (no server POST since JSONPlaceholder is read-only)
-function addQuote() {
+// Add new quote locally and simulate POST to server
+async function addQuote() {
   const textInput = document.getElementById("newQuoteText");
   const categoryInput = document.getElementById("newQuoteCategory");
   const newText = textInput.value.trim();
@@ -175,6 +175,27 @@ function addQuote() {
     textInput.value = "";
     categoryInput.value = "";
     notifyUser("Quote added locally.");
+
+    try {
+      const response = await fetch(SERVER_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          title: newQuote.text,
+          body: newQuote.category,
+          userId: 1
+        })
+      });
+
+      const result = await response.json();
+      console.log("Server response:", result);
+      notifyUser("Quote sent to server (simulated).");
+    } catch (err) {
+      console.error("POST failed:", err);
+      notifyUser("Failed to send quote to server.");
+    }
   } else {
     alert("Please enter both quote text and category.");
   }
