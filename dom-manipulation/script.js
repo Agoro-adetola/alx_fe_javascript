@@ -39,8 +39,8 @@ function mergeQuotes(serverQuotes, localQuotes) {
   return Array.from(map.values());
 }
 
-// Sync quotes from server
-async function syncQuotes() {
+// Fetch quotes from server (mock API)
+async function fetchQuotesFromServer() {
   try {
     const response = await fetch(SERVER_URL);
     const serverPosts = await response.json();
@@ -51,19 +51,26 @@ async function syncQuotes() {
       category: "Placeholder"
     }));
 
-    const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
-    const mergedQuotes = mergeQuotes(serverQuotes, localQuotes);
-
-    localStorage.setItem("quotes", JSON.stringify(mergedQuotes));
-    quotes = mergedQuotes;
-
-    populateCategories();
-    filterQuotes();
-    notifyUser("Quotes synced from server.");
+    return serverQuotes;
   } catch (error) {
-    console.error("Error syncing with server:", error);
-    notifyUser("Failed to sync with server.");
+    console.error("Error fetching from server:", error);
+    notifyUser("Failed to fetch quotes from server.");
+    return [];
   }
+}
+
+// Sync quotes with server
+async function syncQuotes() {
+  const serverQuotes = await fetchQuotesFromServer();
+  const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
+  const mergedQuotes = mergeQuotes(serverQuotes, localQuotes);
+
+  localStorage.setItem("quotes", JSON.stringify(mergedQuotes));
+  quotes = mergedQuotes;
+
+  populateCategories();
+  filterQuotes();
+  notifyUser("Quotes synced from server.");
 }
 
 // Periodic sync every 30 seconds
