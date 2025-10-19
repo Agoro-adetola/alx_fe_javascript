@@ -70,7 +70,7 @@ async function syncQuotes() {
 
   populateCategories();
   filterQuotes();
-  notifyUser("Quotes synced from server.");
+  notifyUser("Quotes synced with server!");
 }
 
 // Periodic sync every 30 seconds
