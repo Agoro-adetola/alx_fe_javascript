@@ -1,4 +1,4 @@
-const SERVER_URL = "http://localhost:3000/quotes";
+const SERVER_URL = "https://jsonplaceholder.typicode.com/posts";
 let quotes = JSON.parse(localStorage.getItem("quotes")) || [];
 
 // DOM Elements
@@ -35,11 +35,17 @@ function mergeQuotes(serverQuotes, localQuotes) {
   return Array.from(map.values());
 }
 
-// Fetch quotes from server and sync
+// Fetch quotes from JSONPlaceholder and sync
 async function fetchQuotesFromServer() {
   try {
     const response = await fetch(SERVER_URL);
-    const serverQuotes = await response.json();
+    const serverPosts = await response.json();
+
+    // Convert posts to quote format
+    const serverQuotes = serverPosts.slice(0, 10).map(post => ({
+      text: post.title,
+      category: "Placeholder"
+    }));
 
     const localQuotes = JSON.parse(localStorage.getItem("quotes")) || [];
     const mergedQuotes = mergeQuotes(serverQuotes, localQuotes);
@@ -49,10 +55,10 @@ async function fetchQuotesFromServer() {
 
     populateCategories();
     filterQuotes();
-    notifyUser("Quotes synced from server.");
+    notifyUser("Quotes synced from JSONPlaceholder.");
   } catch (error) {
     console.error("Error syncing with server:", error);
-    notifyUser("Failed to sync with server.");
+    notifyUser("Failed to sync with JSONPlaceholder.");
   }
 }
 
@@ -154,8 +160,8 @@ function createAddQuoteForm() {
   formContainer.appendChild(addButton);
 }
 
-// Add new quote locally and to server
-async function addQuote() {
+// Add new quote locally (no server POST since JSONPlaceholder is read-only)
+function addQuote() {
   const textInput = document.getElementById("newQuoteText");
   const categoryInput = document.getElementById("newQuoteCategory");
   const newText = textInput.value.trim();
@@ -169,17 +175,6 @@ async function addQuote() {
     textInput.value = "";
     categoryInput.value = "";
     notifyUser("Quote added locally.");
-
-    try {
-      await fetch(SERVER_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newQuote)
-      });
-      notifyUser("Quote synced to server.");
-    } catch (err) {
-      notifyUser("Failed to sync quote to server.");
-    }
   } else {
     alert("Please enter both quote text and category.");
   }
